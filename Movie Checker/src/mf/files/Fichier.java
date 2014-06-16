@@ -1,45 +1,42 @@
 package mf.files;
+import java.awt.Desktop;
 import java.io.File;
 import java.util.ArrayList;
-import java.awt.Desktop;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import mf.exception.files.*;
+import mf.exception.files.CannotDeleteMovie;
+import mf.exception.files.CannotPlayMovie;
+import mf.exception.files.IsNotDirectory;
+import mf.exception.files.IsNotFile;
+import mf.exception.files.UnfoundFile;
 
 
-@SuppressWarnings("serial")
-public class Fichier extends File{
+public class Fichier{
 	// enregistre le nom du répertoire de travail ou le chemin complet s'il s'agit d'un fichier
-	private static String WORD_DIRECTORY = "";
+	private static final String WORK_DIRECTORY = "I:\\Films\\";
 	public static final String AFFICHE_DIRECTORY = "affiches\\";
-	
-	//********* CONSTRUCTEUR *********//
-	public Fichier(String dir) throws UnfoundFile{
-		super(dir);
-		if (!dir.isEmpty())
-			WORD_DIRECTORY = dir + "\\";
-		this.checkPresence(); //vérifie l'existence du fichier ou du dossier
-	}
 	
 	//******************************************//
 	//*************** PUBLIC *******************//
 	//******************************************//
-	
+
 	//retourne un ArrayList de String contenant le nom et le chemin relatif de tous les fichiers trouvés
 	// THROWS UnfoundFile si le fichier n'existe pas ou IsNotDirectory si c'est un fichier.
-	public ArrayList<String> getFilms() throws UnfoundFile, IsNotDirectory{
-		this.checkPresence(); //vérifie l'existence du fichier ou du dossier
+	public static ArrayList<String> getFilms() throws UnfoundFile, IsNotDirectory{
+		checkPresence(new File(WORK_DIRECTORY)); //vérifie l'existence du fichier ou du dossier
 		
-		return findFiles(this); // appel à la fonction récurssive
+		return findFiles(new File(WORK_DIRECTORY)); // appel à la fonction récurssive
 	}
 	
 	//renomme un fichier à partir de son chemin relatif. Retourne TRUE si pas d'erreur
 	//THROWS UnfoundedFile si le fichier old_name n'existe pas ou IsnotFile s'il s'agit d'un dossier
-	public boolean renameFile(String old_name, String new_name) throws UnfoundFile, IsNotFile{
-		Fichier f = new Fichier(WORD_DIRECTORY+old_name);
+	public static boolean renameFile(String old_name, String new_name) throws UnfoundFile, IsNotFile{
+		File f = new File(WORK_DIRECTORY+old_name);
 		
-		f.checkIsFile(); //Vérifie qu'il s'agisse bien d'un fichier
+		checkIsFile(f); //Vérifie qu'il s'agisse bien d'un fichier
 		
-		return f.renameTo(new File(WORD_DIRECTORY+new_name));
+		return f.renameTo(new File(WORK_DIRECTORY+new_name));
 	}
 	
 	//lance la lecture d'une video avec le lecteur par défaut.
@@ -48,7 +45,7 @@ public class Fichier extends File{
 		Desktop desktop = Desktop.getDesktop();
 		if (desktop.isSupported(Desktop.Action.OPEN)) { // test la compatiilité
 			try {
-				desktop.open(new File(WORD_DIRECTORY+name));
+				desktop.open(new File(WORK_DIRECTORY+name));
 			}catch (Exception e) {
 				throw new CannotPlayMovie("Cannot play movie " + name);
 			}
@@ -57,12 +54,85 @@ public class Fichier extends File{
 			throw new CannotPlayMovie("Cannot play movie " + name);
 	}
 	
+	/* supprime le fichier portant le nom name du support */
 	public static boolean deleteMovie(String name) throws CannotDeleteMovie, UnfoundFile, IsNotFile {
-		Fichier f = new Fichier(WORD_DIRECTORY+name);
+		File f = new File(WORK_DIRECTORY+name);
 		
-		f.checkIsFile();
+		checkIsFile(f);
 		
 		return f.delete();
+	}
+	
+	/* retourne le nom du fichier le plus proche possible du titre du film pour être recherché */
+	public static String ExtractNameMovie(String str_in) {
+		String str_out = new String(str_in);
+		
+
+		/*  on sauvegarde le(s) dossiers parents avant le traitement */
+		int i;
+		while ((i = str_out.indexOf("\\")) != -1) {
+			str_out = str_out.substring(i+1, str_out.length());
+		}
+		
+		/* on retire l'extension */
+		i = str_out.length() -1;
+		while (str_out.charAt(i) != '.')
+			i--;
+		str_out = str_out.substring(0,i);
+		
+		str_out = str_out.replace('.', ' ');
+		
+		Pattern p = Pattern.compile("\\[.+\\]");
+		Matcher m = p.matcher(str_out);
+		str_out = m.replaceAll("");
+		
+		if ((i = str_out.toLowerCase().indexOf("truefrench")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("french")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("vf")) != -1)
+			str_out = str_out.substring(0, i) + str_out.substring(i+2, str_out.length());
+		
+		if ((i = str_out.toLowerCase().indexOf("vo ")) != -1)
+			str_out = str_out.substring(0, i) + str_out.substring(i+2, str_out.length());
+		
+		if ((i = str_out.toLowerCase().indexOf("vostf")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("vostfr")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("fr ")) != -1)
+			str_out = str_out.substring(0, i) + str_out.substring(i+2, str_out.length());
+		
+		if ((i = str_out.toLowerCase().indexOf("vostgb")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("720p")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("1080p")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("dvdrip")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("dvd")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		
+		if ((i = str_out.toLowerCase().indexOf("divx")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("by")) != -1)
+			str_out = str_out.substring(0, i);
+		
+		if ((i = str_out.toLowerCase().indexOf("multi ")) != -1)
+			str_out = str_out.substring(0, i);
+				
+		return str_out;
 	}
 	
 	//******************************************//
@@ -70,46 +140,46 @@ public class Fichier extends File{
 	//******************************************//
 	
 	//fonction récurssive de recherche de tous les fichier d'un dossier d
-	private ArrayList<String> findFiles(File d) throws IsNotDirectory {
+	private static ArrayList<String> findFiles(File d) throws IsNotDirectory {
 		ArrayList <String> tabF = new ArrayList<String>();
 		
-		checkIsDirectory();
+		checkIsDirectory(d);
 		
-		for (File f : d.listFiles()) { 
-			if (f.isDirectory()) // si on trouve encore un dossier alors il faut l'ouvrir pour rechercher d'éventuel fichiers
-				tabF.addAll(findFiles(f));
-			else //sinon, on ajoute à ArrayList le nom du fichier trouvé avec son chemin relatif
-				tabF.add(f.getPath().substring(WORD_DIRECTORY.length()+1));
-		}
+		if (d.listFiles() != null)
+			for (File f : d.listFiles()) { 
+				if (f.isDirectory()) // si on trouve encore un dossier alors il faut l'ouvrir pour rechercher d'éventuels fichiers
+					tabF.addAll(findFiles(f));
+				else {//sinon, on ajoute à ArrayList le nom du fichier trouvé avec son chemin relatif
+					String str_temp = f.getPath().substring(WORK_DIRECTORY.length());
+					if (isMovie(str_temp))
+						tabF.add(str_temp);
+				}
+			}
 		return tabF;
 	}
 	
 	//Vérifie que le fichier ou dossier existe et lève l'exception UnfoundFile sinon
-	private void checkPresence()  throws UnfoundFile{
-		if (!(new File(WORD_DIRECTORY).exists()))
-			throw new UnfoundFile("Cannot find directory " + WORD_DIRECTORY);
+	private static void checkPresence(File f)  throws UnfoundFile{
+		if (!(new File(f.getAbsolutePath()).exists()))
+			throw new UnfoundFile("Cannot find directory " + f.getName());
 	}
 	
 	//Vérifie que le fichier est un dossier et lève l'exception IsNotDirectory sinon
-	private void checkIsDirectory()  throws IsNotDirectory{
-		if (!new File(WORD_DIRECTORY).isDirectory())
-			throw new IsNotDirectory(WORD_DIRECTORY + " is a file, not a directory");
+	private static void checkIsDirectory(File f)  throws IsNotDirectory{
+		if (!new File(f.getAbsolutePath()).isDirectory())
+			throw new IsNotDirectory(f.getName() + " is a file, not a directory");
 	}
 	
 	//Vérifie que le fichier n'est pas un dossier et lève l'exception IsNotFile sinon
-	private void checkIsFile()  throws IsNotFile{
-		if (new File(WORD_DIRECTORY).isDirectory())
-			throw new IsNotFile(WORD_DIRECTORY + " is a directory, not a file");
+	private static void checkIsFile(File f)  throws IsNotFile{
+		if (new File(f.getAbsolutePath()).isDirectory())
+			throw new IsNotFile(f.getName() + " is a directory, not a file");
 	}
 	
-	/*private ArrayList<String> filterExtension(ArrayList<String> fichiers) {
-		ArrayList<String> extensions = new ArrayList<String>();
-		
-		for (String f : fichiers) {
-			if (!extensions.contains(f.substring(f.indexOf("."))))
-				extensions.add(f.substring(f.indexOf(".")+1));
-		}
-		System.out.println(extensions.toString());
-		return extensions;
-	}*/
+	/* retourne vrai si l'extension du fichier correspond à celle d'un film */
+	private static boolean isMovie(String str_in) {
+		return (str_in.contains(".avi") || str_in.contains(".AVI") || str_in.contains(".flv") || str_in.contains(".mkv") || str_in.contains(".avi")
+				|| str_in.contains(".mp4") || str_in.contains(".ogm") || str_in.contains(".m4v") || str_in.contains(".MKV") 
+				|| str_in.contains(".Avi"));
+	}
 }
