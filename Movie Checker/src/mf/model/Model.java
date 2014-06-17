@@ -1,6 +1,7 @@
 package mf.model;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
@@ -47,7 +48,7 @@ public class Model{
 	//--------------------------//
 	//------ CONSTRUCTEUR ------//
 	//--------------------------//
-	public Model(){
+	public Model() throws SQLException {
 		LR = realisateurDAO.find(new Realisateur());
 		LA = acteurDAO.find(new Acteur());
 		LG = genreDAO.find(new Type());

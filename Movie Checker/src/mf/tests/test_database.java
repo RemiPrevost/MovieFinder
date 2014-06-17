@@ -4,7 +4,15 @@ import java.util.ArrayList;
 
 import mf.database.dao.DAO;
 import mf.database.dao.DAOFactory;
-import mf.database.pojo.*;
+import mf.database.pojo.Acteur;
+import mf.database.pojo.EstNation;
+import mf.database.pojo.EstType;
+import mf.database.pojo.Film;
+import mf.database.pojo.Jouer;
+import mf.database.pojo.Nationalite;
+import mf.database.pojo.Realisateur;
+import mf.database.pojo.Realiser;
+import mf.database.pojo.Type;
 import mf.exception.bdd.InvalidData;
 import mf.exception.bdd.InvalidDate;
 import mf.exception.bdd.InvalidName;
@@ -22,10 +30,12 @@ public class test_database {
 	
 	@SuppressWarnings("unused")
 	private static void test_nationaliteDAO() {
-		DAO<Nationalite> nationaliteDAO = DAOFactory.getNationaliteDAO();
-		ArrayList<Nationalite> liste_nationalite;
+		DAO<Nationalite> nationaliteDAO;
+		try {
+			nationaliteDAO = DAOFactory.getNationaliteDAO();
 		
-		//try {
+		ArrayList<Nationalite> liste_nationalite;
+	
 			//System.out.println(nationaliteDAO.create(new Nationalite("Italien")));
 			System.out.println(nationaliteDAO.delete(new Nationalite("Italien")));
 			//System.out.println(nationaliteDAO.update(new Nationalite("Américan"), new Nationalite("Américain")));
@@ -38,14 +48,18 @@ public class test_database {
 			for (Nationalite n : liste_nationalite)
 				System.out.println(n.toString());
 			
-		/*} catch (InvalidName e) {
-			e.printStackTrace(); 
-		}*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_est_typeDAO() {
-		DAO<EstType> est_typeDAO = DAOFactory.getEst_TypeDAO();
+		DAO<EstType> est_typeDAO;
+		try {
+			est_typeDAO = DAOFactory.getEst_TypeDAO();
+		
 		ArrayList<EstType> liste_est_type;
 		
 		try {
@@ -64,11 +78,17 @@ public class test_database {
 		} catch (InvalidName e) {
 			e.printStackTrace();
 		}
+		} catch (Exception e1) {
+
+			e1.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_realiserDAO() {
-		DAO<Realiser> realiserDAO = DAOFactory.getRealiserDAO();
+		DAO<Realiser> realiserDAO;
+		try {
+			realiserDAO = DAOFactory.getRealiserDAO();
 		ArrayList<Realiser> liste_realiser;
 		
 		try {
@@ -85,11 +105,18 @@ public class test_database {
 		} catch (InvalidName e) {
 			e.printStackTrace();
 		}
+		} catch (Exception e1) {
+
+			e1.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_jouerDAO() {
-		DAO<Jouer> jouerDAO = DAOFactory.getJouerDAO();
+		DAO<Jouer> jouerDAO;
+		try {
+			jouerDAO = DAOFactory.getJouerDAO();
+		
 		ArrayList<Jouer> liste_jouer;
 		
 		try {
@@ -106,11 +133,17 @@ public class test_database {
 		} catch (InvalidName e) {
 			e.printStackTrace();
 		}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_filmDAO (){
-		DAO<Film> filmDAO = DAOFactory.getFilmDAO();
+		DAO<Film> filmDAO;
+		try {
+			filmDAO = DAOFactory.getFilmDAO();
+		
 		ArrayList<Film> liste_film;
 		
 		
@@ -129,12 +162,18 @@ public class test_database {
 		} catch ( InvalidDate e) {
 			e.printStackTrace();
 		}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_acteurDAO(){
-		DAO<Acteur> acteurDAO = DAOFactory.getActeurDAO();
+		DAO<Acteur> acteurDAO;
+		try {
+			acteurDAO = DAOFactory.getActeurDAO();
+		
 		ArrayList<Acteur> liste_acteur;
 		try {
 			//System.out.println(typesDAO.create(new Types("Comédie")));
@@ -152,11 +191,17 @@ public class test_database {
 		} catch (InvalidName e) {
 			e.printStackTrace();
 		}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("unused")
 	private static void test_est_nationDAO(){
-		DAO<EstNation> est_nationDAO = DAOFactory.getEst_NationDAO();
+		DAO<EstNation> est_nationDAO;
+		try {
+			est_nationDAO = DAOFactory.getEst_NationDAO();
+		
 		ArrayList<EstNation> liste_nation;
 		
 		try {
@@ -177,5 +222,8 @@ public class test_database {
 		else
 			for (EstNation n : liste_nation)
 				System.out.println(n.toString());
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 }

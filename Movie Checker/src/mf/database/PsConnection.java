@@ -5,23 +5,27 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class PsConnection {
-	private String url = "jdbc:postgresql://localhost:5432/Films";
-	private String user = "postgres";
+	private static String url = "jdbc:postgresql://localhost:5432/Films";
+	private static String user = "postgres";
 	private String passwd = "remi050393";
 	private static Connection connect;
 	
-	private PsConnection(){
-		try {
-			connect = DriverManager.getConnection(this.url,this.user,this.passwd);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	private PsConnection() throws SQLException{
+		connect = DriverManager.getConnection(url,user,passwd);
 	}
 	
-	public static Connection getInstance(){
+	public static Connection getInstance() throws SQLException{
 		if (connect == null)
 			new PsConnection();
 		
 		return connect;
+	}
+
+	public static String getUrl() {
+		return url;
+	}
+
+	public static String getUser() {
+		return user;
 	}
 }
