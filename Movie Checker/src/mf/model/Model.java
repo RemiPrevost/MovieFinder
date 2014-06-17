@@ -49,6 +49,8 @@ public class Model{
 	//------ CONSTRUCTEUR ------//
 	//--------------------------//
 	public Model() throws SQLException {
+		
+		
 		LR = realisateurDAO.find(new Realisateur());
 		LA = acteurDAO.find(new Acteur());
 		LG = genreDAO.find(new Type());

@@ -1,12 +1,18 @@
 package mf.files;
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import mf.exception.files.CannotDeleteMovie;
 import mf.exception.files.CannotPlayMovie;
+import mf.exception.files.FileSystemCorrupted;
+import mf.exception.files.FileSystemUnavailable;
 import mf.exception.files.IsNotDirectory;
 import mf.exception.files.IsNotFile;
 import mf.exception.files.UnfoundFile;
@@ -17,9 +23,107 @@ public class Fichier{
 	private static final String WORK_DIRECTORY = "I:\\Films\\";
 	public static final String AFFICHE_DIRECTORY = "affiches\\";
 	
+	public static final int READ = 0;
+	public static final int WRITE = 1;
+	
+	private static BufferedReader read_buff_system = null;
+	private static FileWriter writer_buff_system = null;
+	
 	//******************************************//
 	//*************** PUBLIC *******************//
 	//******************************************//
+	
+	/* Ouvre le fichier système (le fichier est crée s'il n'existe pas) en cas d'échec, le fichier n'est pas présent.
+	 * Parameters : mode - Indique s'il s'agit d'une ouverture en lecture ou en écriture (Valeurs : Fichier.READ, Fichier.WRITE)
+	 * Return : true si l'ouverture/création s'est bien déroulée
+	 * 			false en cas d'échec (le fichier n'est alors pas présent) */
+	public static boolean OpenFileSystem(int mode) {
+		if (mode == READ) {
+			try {
+				read_buff_system = new BufferedReader(new FileReader("bin\\system"));
+				read_buff_system.mark(0);
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
+		}
+		else if(mode == WRITE) {
+			try {
+				read_buff_system = new BufferedReader(new FileReader("bin\\system"));
+				writer_buff_system = new FileWriter("bin\\system", true);
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
+		}
+		else
+			return false;
+	}
+	
+	/* Ferme le fichier système précédement ouvert */
+	public static void CloseFileSystem() {
+		if (read_buff_system != null)
+			try {
+				read_buff_system.close();
+				read_buff_system = null;
+			} catch (IOException e) {
+				read_buff_system = null;
+			}
+		if (writer_buff_system != null)
+			try {
+				writer_buff_system.close();
+				writer_buff_system = null;
+			} catch (IOException e) {
+				writer_buff_system = null;
+			}
+	}
+	
+	/* Retourne un tableau contenant tous les noms de fichiers dans la liste d'exculsion
+	 * THROWS : FileSystemUnavailable - tentative d'accès au fichier system sans ouverture
+	 * 			FileSystemCorrupted - Erreur détectée lors de la lecture du fichier */
+	public static String[] getTabFileName() throws FileSystemUnavailable, FileSystemCorrupted {
+		if (read_buff_system == null)
+			throw new FileSystemUnavailable("Le fichier système n'est pas encore ouvert en lecture");
+		
+		try {
+			String[] tab_file_name = new String[Integer.parseInt(read_buff_system.readLine())];
+			read_buff_system.mark(0);
+			
+			for (int i = 0; i < tab_file_name.length; i++) {
+				tab_file_name[i] = read_buff_system.readLine();
+			}
+			read_buff_system.reset();
+			
+			return tab_file_name;
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
+			throw new FileSystemCorrupted("Fichier system corrompu");
+		}
+	}
+	
+	public static boolean AddFileName(String name) throws FileSystemUnavailable {
+		if (writer_buff_system == null)
+			throw new FileSystemUnavailable("Le fichier système n'est pas encore ouvert en écriture");
+		if (read_buff_system == null)
+			throw new FileSystemUnavailable("Le fichier système n'est pas encore ouvert en lecture");
+		
+		try {
+			/* on vérifie que le fichier n'est pas déjà présent dans la liste d'exclusion */
+			String line;
+			while ((line = read_buff_system.readLine()) != null) {
+				if (line.equals(name))
+					return true;
+			}
+			read_buff_system.reset();
+			
+			writer_buff_system.write(name);
+			
+			return true;
+			
+		} catch (IOException e) {
+			return false;
+		}
+	}
 
 	//retourne un ArrayList de String contenant le nom et le chemin relatif de tous les fichiers trouvés
 	// THROWS UnfoundFile si le fichier n'existe pas ou IsNotDirectory si c'est un fichier.

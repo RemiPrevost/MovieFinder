@@ -23,10 +23,9 @@ public class Main {
 			catch (InstantiationException e) {}
 			catch (ClassNotFoundException e) {}
 			catch (UnsupportedLookAndFeelException e) {}
-			catch (IllegalAccessException e) {}	
+			catch (IllegalAccessException e) {}	                                                                                                                              
 			
 			JOptionPane.showMessageDialog(null, "Impossible d'accéder à la base de donnée", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-
 }
