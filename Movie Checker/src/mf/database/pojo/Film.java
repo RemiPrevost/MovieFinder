@@ -21,6 +21,15 @@ public class Film {
 		this.titre_disque = titre_disque;
 	}
 	
+	public Film(String titre_disque, String titre) throws InvalidName {
+		
+		if (titre_disque.isEmpty())
+			throw new InvalidName("Cannot add movie with empty title, use new Film() instead");
+		
+		this.titre_disque = titre_disque;
+		this.titre = titre;
+	}
+	
 	public Film(String titre_disque, String titre, int date, int seen, String affiche, float note) throws InvalidDate {
 		
 		if ((date < 1800 || date > Calendar.getInstance().get(Calendar.YEAR)) && date != -1)

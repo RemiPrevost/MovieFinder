@@ -51,8 +51,12 @@ public abstract class DAO<T> {
 	}
 	
 	protected final String CastToOutput(String str_in) {
-		String str_out = str_in.toLowerCase();
+		if (str_in.isEmpty()) {
+			return str_in;
+		}
 		
+		String str_out = str_in.toLowerCase();
+				
 		/* élimine des espaces en début */
 		while (str_out.charAt(0) == ' ')
 			str_out = str_out.substring(1);

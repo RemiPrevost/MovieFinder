@@ -91,12 +91,13 @@ public class Fichier{
 		try {
 			ArrayList<String> tab_file_name = new ArrayList<String>();
 			String line;
+			read_buff_system.reset();
 			while ((line = read_buff_system.readLine()) != null) {
 				tab_file_name.add(line);
 			}
 			
 			return tab_file_name;
-		} catch (NumberFormatException | IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			throw new FileSystemCorrupted("Fichier system corrompu");
 		}
@@ -243,7 +244,11 @@ public class Fichier{
 		if ((i = str_out.toLowerCase().indexOf("multi ")) != -1)
 			str_out = str_out.substring(0, i);
 				
-		return str_out;
+		if (str_out.isEmpty()) {
+			return str_in;
+		}
+		else
+			return str_out;
 	}
 	
 	//******************************************//

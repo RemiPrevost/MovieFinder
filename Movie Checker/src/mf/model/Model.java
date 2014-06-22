@@ -50,7 +50,6 @@ public class Model{
 	//--------------------------//
 	public Model() throws SQLException {
 		
-		
 		LR = realisateurDAO.find(new Realisateur());
 		LA = acteurDAO.find(new Acteur());
 		LG = genreDAO.find(new Type());
@@ -198,6 +197,28 @@ public class Model{
 	
 	public ArrayList<FicheFilm> getLFF() {
 		return LFF;
+	}
+	
+	public void addF(String titre_disque, String titre) {
+		try {
+			filmDAO.create(new Film(titre_disque,titre));
+		} catch (InvalidName e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean isPresentFilm(String titre_disque) {
+		try {
+			if (filmDAO.find(new Film(titre_disque)).isEmpty())
+				return false;
+			else
+				return true;
+		} catch (InvalidName e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public FicheFilm getFicheFilm(String titre_disque) {
