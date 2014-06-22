@@ -16,7 +16,7 @@ public class test_fichier {
 				System.out.println(s);
 			
 			System.out.println(Fichier.AddFileName("test"));
-			System.out.println(Fichier.AddFileName("test3"));
+			System.out.println(Fichier.AddFileName("test5"));
 			System.out.println();
 			
 			Fichier.CloseFileSystem();
@@ -26,7 +26,6 @@ public class test_fichier {
 				System.out.println(s);
 			
 		} catch (FileSystemUnavailable | FileSystemCorrupted e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			Fichier.CloseFileSystem();

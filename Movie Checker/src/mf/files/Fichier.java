@@ -41,7 +41,8 @@ public class Fichier{
 		if (mode == READ) {
 			try {
 				read_buff_system = new BufferedReader(new FileReader("bin\\system"));
-				read_buff_system.mark(0);
+				File file = new File("bin\\system");
+				read_buff_system.mark(2*(int)file.length());
 				return true;
 			} catch (IOException e) {
 				return false;
@@ -50,6 +51,8 @@ public class Fichier{
 		else if(mode == WRITE) {
 			try {
 				read_buff_system = new BufferedReader(new FileReader("bin\\system"));
+				File file = new File("bin\\system");
+				read_buff_system.mark(2*(int)file.length());
 				writer_buff_system = new FileWriter("bin\\system", true);
 				return true;
 			} catch (IOException e) {
@@ -81,18 +84,16 @@ public class Fichier{
 	/* Retourne un tableau contenant tous les noms de fichiers dans la liste d'exculsion
 	 * THROWS : FileSystemUnavailable - tentative d'accès au fichier system sans ouverture
 	 * 			FileSystemCorrupted - Erreur détectée lors de la lecture du fichier */
-	public static String[] getTabFileName() throws FileSystemUnavailable, FileSystemCorrupted {
+	public static ArrayList<String> getTabFileName() throws FileSystemUnavailable, FileSystemCorrupted {
 		if (read_buff_system == null)
 			throw new FileSystemUnavailable("Le fichier système n'est pas encore ouvert en lecture");
 		
 		try {
-			String[] tab_file_name = new String[Integer.parseInt(read_buff_system.readLine())];
-			read_buff_system.mark(0);
-			
-			for (int i = 0; i < tab_file_name.length; i++) {
-				tab_file_name[i] = read_buff_system.readLine();
+			ArrayList<String> tab_file_name = new ArrayList<String>();
+			String line;
+			while ((line = read_buff_system.readLine()) != null) {
+				tab_file_name.add(line);
 			}
-			read_buff_system.reset();
 			
 			return tab_file_name;
 		} catch (NumberFormatException | IOException e) {
@@ -110,17 +111,23 @@ public class Fichier{
 		try {
 			/* on vérifie que le fichier n'est pas déjà présent dans la liste d'exclusion */
 			String line;
-			while ((line = read_buff_system.readLine()) != null) {
-				if (line.equals(name))
-					return true;
-			}
 			read_buff_system.reset();
+			while ((line = read_buff_system.readLine()) != null) {
+				if (line.equals(name)) {
+					return true;
+				}
+			}
 			
-			writer_buff_system.write(name);
+			StringBuilder new_line = new StringBuilder("");
+			new_line.append(System.getProperty("line.separator"));
+			new_line.append(name);
+			writer_buff_system.write(new_line.toString(),0,new_line.length());
+			
 			
 			return true;
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
