@@ -57,6 +57,8 @@ public class PanFilm extends Panel{
 		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(20);
 
+		
+
 	    table.setColumnSelectionAllowed(false);
 	    table.setRowSelectionAllowed(true);
 	    table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

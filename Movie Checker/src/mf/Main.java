@@ -55,9 +55,17 @@ public class Main {
 			catch (IllegalAccessException e) {}	                                                                                                                              
 			
 			JOptionPane.showMessageDialog(null, "Impossible d'accéder à la base de donnée", "MovieFinder : Erreur", JOptionPane.ERROR_MESSAGE);
-		} catch (UnfoundFile e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (UnfoundFile FILE_E) {
+			try {
+				//On force à utiliser le « look and feel » du système
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (InstantiationException e) {}
+			catch (ClassNotFoundException e) {}
+			catch (UnsupportedLookAndFeelException e) {}
+			catch (IllegalAccessException e) {}	                                                                                                                              
+			
+			JOptionPane.showMessageDialog(null, "Impossible d'accéder aux films du répertoire " + Fichier.WORK_DIRECTORY, "MovieFinder : Erreur", JOptionPane.ERROR_MESSAGE);
 		} catch (IsNotDirectory e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

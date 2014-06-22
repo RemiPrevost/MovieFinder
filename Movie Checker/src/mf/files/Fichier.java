@@ -20,7 +20,7 @@ import mf.exception.files.UnfoundFile;
 
 public class Fichier{
 	// enregistre le nom du répertoire de travail ou le chemin complet s'il s'agit d'un fichier
-	private static final String WORK_DIRECTORY = "I:\\Films\\";
+	public static final String WORK_DIRECTORY = "I:\\Films\\";
 	public static final String AFFICHE_DIRECTORY = "affiches\\";
 	
 	public static final int READ = 0;
