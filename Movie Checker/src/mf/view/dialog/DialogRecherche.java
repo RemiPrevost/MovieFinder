@@ -116,6 +116,12 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			bouton_ok.setEnabled(false);
 		}
 		else if (DialogRunning.getState() == DialogRunning.FAIL || DialogRunning.getState() == DialogRunning.NC) {
+			label_message.setText("Impossible de se connecter au serveur AlloCiné");
+			this.getContentPane().add(panel_message,BorderLayout.CENTER);
+			bouton_ok.setEnabled(false);
+		}
+		else if (LFF.size() == 0) {
+			label_message.setText("Aucun résultat trouvé");
 			this.getContentPane().add(panel_message,BorderLayout.CENTER);
 			bouton_ok.setEnabled(false);
 		}
@@ -152,7 +158,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 	
 	private void cancel() {
 		this.removeAll();
-		if (DialogRunning.getState() == DialogRunning.SUCCESS)
+		if (DialogRunning.getState() == DialogRunning.SUCCESS && LFF.size() != 0)
 			for (PanelFicheFilm lpff : liste_panel_ff)
 				lpff.free();
 	}
