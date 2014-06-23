@@ -61,7 +61,6 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 	private ArrayList<FicheFilm> LFF = new ArrayList<FicheFilm>();
 	private FicheFilm fiche_film;
 	
-	
 	private PanelFicheFilm[] liste_panel_ff;
 	private JRadioButton[] liste_radio_bouton;
 	private ButtonGroup bouton_group = new ButtonGroup();
