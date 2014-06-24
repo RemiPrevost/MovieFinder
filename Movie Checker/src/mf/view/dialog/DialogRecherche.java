@@ -157,7 +157,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 	
 	private void cancel() {
 		this.removeAll();
-		if (DialogRunning.getState() == DialogRunning.SUCCESS && LFF.size() != 0)
+		if (DialogRunning.getState() == DialogRunning.SUCCESS && liste_panel_ff != null)
 			for (PanelFicheFilm lpff : liste_panel_ff)
 				lpff.free();
 	}
@@ -195,17 +195,26 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			
 			label_message.setText("Echec de la connection !");
 		}
+		else if (LFF == null) {
+			label_message.setText("Aucun résultat trouvé");
+			this.getContentPane().add(panel_message,BorderLayout.CENTER);
+			bouton_ok.setEnabled(false);
+		}
 		else {
 			panel_ff.removeAll();
 			panel_ff.repaint();
 
-			for (int i = 0; i<liste_panel_ff.length; i++) {
-				if (liste_panel_ff[i] != null) {
-					liste_panel_ff[i].free();
-					liste_panel_ff[i] = null;
+			this.getContentPane().removeAll();
+			this.getContentPane().add(panel_recherche,BorderLayout.CENTER);
+			
+			if (liste_panel_ff != null)
+				for (int i = 0; i<liste_panel_ff.length; i++) {
+					if (liste_panel_ff[i] != null) {
+						liste_panel_ff[i].free();
+						liste_panel_ff[i] = null;
+					}
+					liste_radio_bouton[i] = null;
 				}
-				liste_radio_bouton[i] = null;
-			}
 			
 			liste_panel_ff = new PanelFicheFilm[LFF.size()];
 			liste_radio_bouton = new JRadioButton[LFF.size()];
@@ -246,7 +255,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 				}
 			printResult();
 			
-			if (DialogRunning.getState() == DialogRunning.SUCCESS)
+			if (DialogRunning.getState() == DialogRunning.SUCCESS && liste_radio_bouton != null)
 				for (int i = 0; i < liste_radio_bouton.length; i++){
 					liste_panel_ff[i].setBorder(border_empty);
 					if (e.getSource() == liste_radio_bouton[i]) {

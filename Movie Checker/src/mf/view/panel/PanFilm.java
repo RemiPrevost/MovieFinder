@@ -56,9 +56,17 @@ public class PanFilm extends Panel{
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(20);
-
 		
-
+		table.getColumnModel().getColumn(1).setMinWidth(90);
+		table.getColumnModel().getColumn(1).setMaxWidth(90);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setMinWidth(50);
+		table.getColumnModel().getColumn(2).setMaxWidth(50);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(3).setMinWidth(60);
+		table.getColumnModel().getColumn(3).setMaxWidth(60);
+		table.getColumnModel().getColumn(3).setResizable(false);
+		
 	    table.setColumnSelectionAllowed(false);
 	    table.setRowSelectionAllowed(true);
 	    table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
