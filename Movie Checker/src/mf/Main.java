@@ -20,8 +20,7 @@ public class Main {
 		
 		try {
 			Model model = new Model();
-			
-			System.out.println("Début de la recherche");
+
 			Fichier.OpenFileSystem(Fichier.WRITE);
 			
 			ArrayList<String> liste_films = Fichier.getFilms();
@@ -39,8 +38,6 @@ public class Main {
 					}
 				}
 			}
-			
-			System.out.println("Fin de la recherche");
 			
 			new Controller(model);
 			

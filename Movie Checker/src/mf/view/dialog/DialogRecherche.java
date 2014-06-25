@@ -109,12 +109,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 		
 		this.setSize(1100,650);
 		
-		if (DialogRunning.getState() == DialogRunning.CANCELLED) {
-			label_message.setText("Recherche abandonnée");
-			this.getContentPane().add(panel_message,BorderLayout.CENTER);
-			bouton_ok.setEnabled(false);
-		}
-		else if (DialogRunning.getState() == DialogRunning.FAIL || DialogRunning.getState() == DialogRunning.NC) {
+		if (DialogRunning.getState() == DialogRunning.FAIL || DialogRunning.getState() == DialogRunning.NC) {
 			label_message.setText("Impossible de se connecter au serveur AlloCiné");
 			this.getContentPane().add(panel_message,BorderLayout.CENTER);
 			bouton_ok.setEnabled(false);
@@ -151,8 +146,10 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 				bouton_ok.setEnabled(false);
 		}
 
-		ModifierDialog.createDialogBackPanel(this, parent.getContentPane());
-		ModifierDialog.fadeIn(this);
+		if (DialogRunning.getState() != DialogRunning.CANCELLED) {
+			ModifierDialog.createDialogBackPanel(this, parent.getContentPane());
+			ModifierDialog.fadeIn(this);
+		}
 	}
 	
 	private void cancel() {
@@ -163,7 +160,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 	}
 	
 	private void printResult() {
-		if (DialogRunning.getState() == DialogRunning.CANCELLED) {
+		/*if (DialogRunning.getState() == DialogRunning.CANCELLED) {
 			panel_ff.removeAll();
 
 			for (int i = 0; i<liste_panel_ff.length; i++) {
@@ -179,7 +176,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			this.getContentPane().repaint();
 			label_message.setText("Recherche abandonnée");
 		}
-		else if (DialogRunning.getState() == DialogRunning.FAIL || DialogRunning.getState() == DialogRunning.NC) {
+		else*/ if (DialogRunning.getState() == DialogRunning.FAIL || DialogRunning.getState() == DialogRunning.NC) {
 			panel_ff.removeAll();
 
 			for (int i = 0; i<liste_panel_ff.length; i++) {
@@ -200,7 +197,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			this.getContentPane().add(panel_message,BorderLayout.CENTER);
 			bouton_ok.setEnabled(false);
 		}
-		else {
+		else if (DialogRunning.getState() == DialogRunning.SUCCESS) {
 			panel_ff.removeAll();
 			panel_ff.repaint();
 
@@ -247,12 +244,13 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			ModifierDialog.fadeOut(this);
 		}
 		else if (e.getSource() == bouton_rechercher) {
-			LFF.clear();
 			new DialogRunning(parent,textfield_titre.getText());
-			if (DialogRunning.getState() == DialogRunning.SUCCESS)
+			if (DialogRunning.getState() == DialogRunning.SUCCESS) {
+				LFF.clear();
 				while (Stream.hasNext()) {
 					LFF.add(Stream.getNext());
 				}
+			}
 			printResult();
 			
 			if (DialogRunning.getState() == DialogRunning.SUCCESS && liste_radio_bouton != null)
