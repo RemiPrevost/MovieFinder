@@ -20,7 +20,7 @@ import mf.exception.files.UnfoundFile;
 
 public class Fichier{
 	// enregistre le nom du répertoire de travail ou le chemin complet s'il s'agit d'un fichier
-	public static final String WORK_DIRECTORY = "I:\\Films\\";
+	public static String work_directory = "F:\\Films\\";
 	public static final String AFFICHE_DIRECTORY = "affiches\\";
 	
 	public static final int READ = 0;
@@ -33,7 +33,7 @@ public class Fichier{
 	//*************** PUBLIC *******************//
 	//******************************************//
 	
-	/* Ouvre le fichier système (le fichier est crée s'il n'existe pas) en cas d'échec, le fichier n'est pas présent.
+	/* Ouvre le fichier système. En cas d'échec, le fichier n'est pas présent.
 	 * Parameters : mode - Indique s'il s'agit d'une ouverture en lecture ou en écriture (Valeurs : Fichier.READ, Fichier.WRITE)
 	 * Return : true si l'ouverture/création s'est bien déroulée
 	 * 			false en cas d'échec (le fichier n'est alors pas présent) */
@@ -136,19 +136,19 @@ public class Fichier{
 	//retourne un ArrayList de String contenant le nom et le chemin relatif de tous les fichiers trouvés
 	// THROWS UnfoundFile si le fichier n'existe pas ou IsNotDirectory si c'est un fichier.
 	public static ArrayList<String> getFilms() throws UnfoundFile, IsNotDirectory{
-		checkPresence(new File(WORK_DIRECTORY)); //vérifie l'existence du fichier ou du dossier
+		checkPresence(new File(work_directory)); //vérifie l'existence du fichier ou du dossier
 		
-		return findFiles(new File(WORK_DIRECTORY)); // appel à la fonction récurssive
+		return findFiles(new File(work_directory)); // appel à la fonction récurssive
 	}
 	
 	//renomme un fichier à partir de son chemin relatif. Retourne TRUE si pas d'erreur
 	//THROWS UnfoundedFile si le fichier old_name n'existe pas ou IsnotFile s'il s'agit d'un dossier
 	public static boolean renameFile(String old_name, String new_name) throws UnfoundFile, IsNotFile{
-		File f = new File(WORK_DIRECTORY+old_name);
+		File f = new File(work_directory+old_name);
 		
 		checkIsFile(f); //Vérifie qu'il s'agisse bien d'un fichier
 		
-		return f.renameTo(new File(WORK_DIRECTORY+new_name));
+		return f.renameTo(new File(work_directory+new_name));
 	}
 	
 	//lance la lecture d'une video avec le lecteur par défaut.
@@ -157,7 +157,7 @@ public class Fichier{
 		Desktop desktop = Desktop.getDesktop();
 		if (desktop.isSupported(Desktop.Action.OPEN)) { // test la compatiilité
 			try {
-				desktop.open(new File(WORK_DIRECTORY+name));
+				desktop.open(new File(work_directory+name));
 			}catch (Exception e) {
 				throw new CannotPlayMovie("Cannot play movie " + name);
 			}
@@ -168,7 +168,7 @@ public class Fichier{
 	
 	/* supprime le fichier portant le nom name du support */
 	public static boolean deleteMovie(String name) throws CannotDeleteMovie, UnfoundFile, IsNotFile {
-		File f = new File(WORK_DIRECTORY+name);
+		File f = new File(work_directory+name);
 		
 		checkIsFile(f);
 		
@@ -266,7 +266,7 @@ public class Fichier{
 				if (f.isDirectory()) // si on trouve encore un dossier alors il faut l'ouvrir pour rechercher d'éventuels fichiers
 					tabF.addAll(findFiles(f));
 				else {//sinon, on ajoute à ArrayList le nom du fichier trouvé avec son chemin relatif
-					String str_temp = f.getPath().substring(WORK_DIRECTORY.length());
+					String str_temp = f.getPath().substring(work_directory.length());
 					if (isMovie(str_temp))
 						tabF.add(str_temp);
 				}

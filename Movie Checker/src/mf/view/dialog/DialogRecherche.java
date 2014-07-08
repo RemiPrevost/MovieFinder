@@ -234,7 +234,7 @@ public class DialogRecherche extends JDialog implements MouseListener , ActionLi
 			if (LFF.size() != 0)
 				bouton_ok.setEnabled(true);
 			else 
-				bouton_ok.setEnabled(false);
+				bouton_ok.setEnabled(false);			
 		}
 	}
 

@@ -1,34 +1,19 @@
 package mf.tests;
 
-import mf.exception.files.FileSystemCorrupted;
-import mf.exception.files.FileSystemUnavailable;
-import mf.files.Fichier;
+import java.io.File;
+
+import javax.swing.filechooser.FileSystemView;
 
 
 
 public class test_fichier {
 
 	public static void main(String[] args) {
-		try {
-			System.out.println(Fichier.OpenFileSystem(Fichier.WRITE));
-			
-			for (String s : Fichier.getTabFileName())
-				System.out.println(s);
-			
-			System.out.println(Fichier.AddFileName("test"));
-			System.out.println(Fichier.AddFileName("test5"));
-			System.out.println();
-			
-			Fichier.CloseFileSystem();
-			System.out.println(Fichier.OpenFileSystem(Fichier.READ));
-			
-			for (String s : Fichier.getTabFileName())
-				System.out.println(s);
-			
-		} catch (FileSystemUnavailable | FileSystemCorrupted e) {
-			e.printStackTrace();
-		} finally {
-			Fichier.CloseFileSystem();
+		FileSystemView FSV = FileSystemView.getFileSystemView();
+		for (int i = 65; i < 91; i++) {
+			File f = new File((char)i+new String(":\\"));
+			if (f.exists())
+				System.out.println(FSV.getSystemDisplayName(f));
 		}
 	}
 
